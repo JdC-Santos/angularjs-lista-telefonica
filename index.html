@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="helloWorld">
+<html lang="en" ng-app="listaTelefonica">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,17 +9,71 @@
   <!-- CSS -->
   <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
-<body>
-  <div ng-controller="helloWorldCtrl" >{{ message }}</div>
+<body ng-controller="listaTelefonicaCtrl">  
+  <div class="p-3 mb-2 bg-secondary bg-gradient text-white text-center">
+    <h4>{{ app }}</h4>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 offset-md-4">
+        <table class="table table-striped text-center">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Telefone</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="contato in contatos track by $index">
+              <td>{{ contato.nome }}</td>
+              <td>{{ contato.telefone }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <hr>
+
+        <form>
+          <div class="row mb-3">
+            <div class="col-sm-12">
+              <input type="text" class="form-control" ng-model="contato.nome" placeholder="Nome">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-sm-12">
+              <input type="text" class="form-control" ng-model="contato.telefone" placeholder="Telefone">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="d-grid gap-0 col-12 mx-auto">
+              <button class="btn btn-success" ng-click="adicionarContato(contato)">Salvar</button>
+            </div>
+          </div>
+          </form>
+      </div>
+    </div>
+  </div>
+  
   <!-- SCRIPTS -->
   <script src="./node_modules/angular/angular.js"></script>
   <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
-
   <script>
-    angular.module('helloWorld',[]);
-    angular.module('helloWorld')
-    .controller('helloWorldCtrl', function($scope) {
-      $scope.message = 'Hello World';
+    angular.module('listaTelefonica',[]);
+    angular.module('listaTelefonica')
+    .controller('listaTelefonicaCtrl', function($scope) {
+      $scope.app = 'Lista Telefonica';
+      $scope.contatos = [
+        {nome: 'Pedro', telefone:'99999999'},
+        {nome: 'Maria', telefone:'88888888'},
+        {nome: 'José', telefone:'77777777'}
+      ];
+
+      $scope.adicionarContato = function(contato) {
+        $scope.contatos.push(angular.copy(contato));
+        delete $scope.contato;
+      }
     });
   </script>
 </body>
