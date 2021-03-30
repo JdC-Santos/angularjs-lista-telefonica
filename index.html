@@ -17,17 +17,32 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4 offset-md-4">
-        <table class="table table-striped text-center">
+        <table ng-show="contatos.length" class="table table-striped text-center">
           <thead>
             <tr>
+              <th></th>
               <th>Nome</th>
               <th>Telefone</th>
+              <th>Operadora</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="contato in contatos track by $index">
+            <tr ng-class="{'bg-warning': contato.selecionado }" ng-repeat="contato in contatos track by $index">
+              <td>
+                <input type="checkbox" ng-model="contato.selecionado">
+              </td>
               <td>{{ contato.nome }}</td>
               <td>{{ contato.telefone }}</td>
+              <td>{{ contato.operadora.nome }}</td>
+              <td>
+                <div 
+                  style="width:20px; height: 20px;" 
+                  ng-style="{'background-color': contato.cor}"
+                  ng-hide="contato.selecionado"
+                  >
+                  </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -45,17 +60,42 @@
               <input type="text" class="form-control" ng-model="contato.telefone" placeholder="Telefone">
             </div>
           </div>
+          <div class="row mb-3">
+            <div class="col-sm-12">
+              <select 
+                class="form-control"
+                ng-model="contato.operadora" 
+                ng-options="operadora.nome for operadora in operadoras">
+                <option value="">Selecione uma Operadora</option>
+              </select>
+            </div>
+          </div>
 
           <div class="row mb-3">
             <div class="d-grid gap-0 col-12 mx-auto">
-              <button class="btn btn-success" ng-click="adicionarContato(contato)">Salvar</button>
+              <button 
+                class="btn btn-success" 
+                ng-click="adicionarContato(contato)"
+                ng-disabled="!contato.nome || !contato.telefone"
+                >Salvar</button>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="d-grid gap-0 col-12 mx-auto">
+              <button 
+                class="btn btn-danger" 
+                ng-click="apagarContatos(contatos)"
+                ng-if="isContatoSelecionado(contatos)"
+                >Remover</button>
             </div>
           </div>
           </form>
       </div>
     </div>
   </div>
-  
+  <div ng-include="'./footer.html'"></div>
+
   <!-- SCRIPTS -->
   <script src="./node_modules/angular/angular.js"></script>
   <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
@@ -65,14 +105,34 @@
     .controller('listaTelefonicaCtrl', function($scope) {
       $scope.app = 'Lista Telefonica';
       $scope.contatos = [
-        {nome: 'Pedro', telefone:'99999999'},
-        {nome: 'Maria', telefone:'88888888'},
-        {nome: 'José', telefone:'77777777'}
+        {nome: 'Pedro', telefone:'99999999', cor: 'orange'},
+        {nome: 'Maria', telefone:'88888888', cor: 'red'},
+        {nome: 'José', telefone:'77777777',cor: 'cyan'}
+      ];
+
+      $scope.operadoras = [
+        { nome:'Oi', cod: '14', categoria:'Celular' },
+        { nome:'Vivo', cod: '15', categoria:'Celular'},
+        { nome:'Tim', cod: '41', categoria:'Celular'},
+        { nome:'GVT', cod: '25', categoria:'Fixo'},
+        { nome:'Embrael', cod: '21', categoria:'Fixo'}
       ];
 
       $scope.adicionarContato = function(contato) {
         $scope.contatos.push(angular.copy(contato));
         delete $scope.contato;
+      }
+
+      $scope.apagarContatos = function(contatos) {
+        $scope.contatos = contatos.filter(function(e) {
+          return !e.selecionado;
+        });
+      }
+
+      $scope.isContatoSelecionado = function(contatos) {
+        return contatos.some(function(contato){
+          return contato.selecionado;
+        });
       }
     });
   </script>
