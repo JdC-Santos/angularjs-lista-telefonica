@@ -17,24 +17,42 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4 offset-md-4">
+        
+        <!-- CAMPO DE BUSCA -->
+        <input 
+          type="text" 
+          class="form-control"
+          placeholder="O que voce está buscando?"
+          ng-model="busca"
+        >
+
         <table ng-show="contatos.length" class="table table-striped text-center">
           <thead>
             <tr>
               <th></th>
-              <th>Nome</th>
-              <th>Telefone</th>
+              <th><a href=""ng-click="ordenarPor('nome')">Nome</a></th>
+              <th><a href="" ng-click="ordenarPor('telefone')">Telefone</a></th>
               <th>Operadora</th>
+              <th>Data</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-class="{'bg-warning': contato.selecionado }" ng-repeat="contato in contatos track by $index">
+            <tr 
+              ng-class="{'bg-warning': contato.selecionado }"
+              ng-repeat="
+                contato in contatos 
+                | filter: busca 
+                | orderBy: criterioDeOrdenacao: direcaoOrdenacao 
+                track by $index"
+            >
               <td>
                 <input type="checkbox" ng-model="contato.selecionado">
               </td>
-              <td>{{ contato.nome }}</td>
+              <td>{{ contato.nome | uppercase | limitTo: 4 }}</td>
               <td>{{ contato.telefone }}</td>
-              <td>{{ contato.operadora.nome }}</td>
+              <td>{{ contato.operadora.nome | lowercase }}</td>
+              <td>{{contato.data | date:'dd/MM/yyyy HH:mm' }}</td>
               <td>
                 <div 
                   style="width:20px; height: 20px;" 
@@ -50,6 +68,8 @@
         <hr>
 
         <form name="contatoForm">
+          
+          <!-- INPUT: NOME -->
           <div class="row mb-3">
             <div class="col-sm-12">
               <input 
@@ -64,6 +84,8 @@
               >
             </div>
           </div>
+
+          <!-- INPUT: TELEFONE -->
           <div class="row mb-3">
             <div class="col-sm-12">
               <input 
@@ -80,20 +102,25 @@
             </div>
           </div>
 
-          <!-- OPERADORA -->
+          <!-- SELECT: OPERADORA -->
           <div class="row mb-3">
             <div class="col-sm-12">
               <select 
                 class="form-control"
                 ng-model="contato.operadora" 
-                ng-options="operadora.nome for operadora in operadoras"
+                ng-options="operadora.nome +' ( '+(operadora.preco | currency)+' )' for operadora in operadoras | orderBy: 'nome'"
               >
                 <option value="">Selecione uma Operadora</option>
               </select>
             </div>
           </div>
 
-          <div ng-messages="contatoForm.nome.$error" class="alert alert-danger" role="alert">
+          <!-- ERROS: NOME -->
+          <div
+            ng-if="contatoForm.nome.$error.length" 
+            ng-messages="contatoForm.nome.$error" 
+            class="alert alert-danger"
+            role="alert">
             <!-- NOME - MSG ERRO: REQUIRED -->
             <div ng-message="required">
               Por favor, preencha o nome!
@@ -104,9 +131,7 @@
               O nome deve ter pelo menos 2 caracteres
             </div>
           </div>
-
-          
-
+        
           <!-- TELEFONE - MSG ERRO: REQUIRED -->
           <div
             ng-show="contatoForm.telefone.$error.required && contatoForm.telefone.$dirty"
@@ -125,6 +150,7 @@
             O campo telefone deve ter o formato XXXXX-XXXX
           </div>
 
+          <!-- BOTÃO: SALVAR -->
           <div class="row mb-3">
             <div class="d-grid gap-0 col-12 mx-auto">
               <button 
@@ -135,6 +161,7 @@
             </div>
           </div>
 
+          <!-- BOTÃO: REMOVER -->
           <div class="row mb-3">
             <div class="d-grid gap-0 col-12 mx-auto">
               <button 
@@ -144,7 +171,7 @@
                 >Remover</button>
             </div>
           </div>
-          </form>
+        </form>
       </div>
     </div>
   </div>
@@ -153,6 +180,7 @@
   <!-- SCRIPTS -->
   <script src="./node_modules/angular/angular.js"></script>
   <script src="./angular-messages.js"></script>
+  <script src="./node_modules/angular-locale-pt-br/angular-locale_pt-br.js"></script>
   <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
   <script>
     angular.module('listaTelefonica',['ngMessages']);
@@ -160,17 +188,17 @@
     .controller('listaTelefonicaCtrl', function($scope) {
       $scope.app = 'Lista Telefonica';
       $scope.contatos = [
-        {nome: 'Pedro', telefone:'99999999', cor: 'orange'},
-        {nome: 'Maria', telefone:'88888888', cor: 'red'},
-        {nome: 'José', telefone:'77777777',cor: 'cyan'}
+        {nome: 'Pedro', telefone:'77777777', cor: 'orange', data: new Date(), operadora: { nome:'Oi', cod: 14, categoria:'Celular'} },
+        {nome: 'Maria', telefone:'88888888', cor: 'red', data: new Date(), operadora: { nome:'Vivo', cod: 15, categoria:'Celular'} },
+        {nome: 'José', telefone:'99999999',cor: 'cyan', data: new Date(), operadora: { nome:'Tim', cod: 41, categoria:'Celular'} }
       ];
 
       $scope.operadoras = [
-        { nome:'Oi', cod: '14', categoria:'Celular' },
-        { nome:'Vivo', cod: '15', categoria:'Celular'},
-        { nome:'Tim', cod: '41', categoria:'Celular'},
-        { nome:'GVT', cod: '25', categoria:'Fixo'},
-        { nome:'Embrael', cod: '21', categoria:'Fixo'}
+        { nome:'Oi', cod: '14', categoria:'Celular', preco: 2 },
+        { nome:'Vivo', cod: '15', categoria:'Celular', preco: 1 },
+        { nome:'Tim', cod: '41', categoria:'Celular', preco: 2 } ,
+        { nome:'GVT', cod: '25', categoria:'Fixo', preco: 1 },
+        { nome:'Embrael', cod: '21', categoria:'Fixo', preco: 3 }
       ];
 
       $scope.adicionarContato = function(contato) {
@@ -189,6 +217,11 @@
         return contatos.some(function(contato){
           return contato.selecionado;
         });
+      }
+
+      $scope.ordenarPor = function(campo) {
+        $scope.criterioDeOrdenacao = campo;
+        $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
       }
     });
   </script>
