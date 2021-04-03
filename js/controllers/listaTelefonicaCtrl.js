@@ -1,5 +1,5 @@
 angular.module('listaTelefonica')
-  .controller('listaTelefonicaCtrl', function($scope, $http) {
+  .controller('listaTelefonicaCtrl', function($scope, contatosAPI, operadorasAPI, serialGenerator) {
     
     $scope.app = 'Lista Telefonica';
     
@@ -9,24 +9,26 @@ angular.module('listaTelefonica')
 
     // função para carregar os contatos da API
     carregarContatos = function() {
-      $http.get('http://localhost:3000/contatos')
-      .then(function(res) {
+      
+      contatosAPI.getContatos().then(function(res) {
         $scope.contatos = res.data;
       });
     }
 
     // função para carregar as operadoras da API
     carregarOperadoras = function() {
-      $http.get('http://localhost:3000/operadoras')
-      .then(function(res) {
+      operadorasAPI.getOperadoras().then(function(res) {
         $scope.operadoras = res.data;
       })
     }
 
     $scope.adicionarContato = function(contato) {
-      
-      $http.post('http://localhost:3000/contatos', contato)
-      .then(function(res) {
+
+      contato.serial = serialGenerator.generate();
+
+      contato.data = new Date();
+
+      contatosAPI.saveContato(contato).then(function(res) {
         
         // recarrega os dados em caso de sucesso
         carregarContatos();

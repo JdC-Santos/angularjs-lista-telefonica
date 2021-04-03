@@ -14,9 +14,15 @@
     <h4>{{ app }}</h4>
   </div>
 
-  <div class="container-fluid">
+  <div class="container">
+    
+    <!-- TABELA -->
     <div class="row">
-      <div class="col-md-4 offset-md-4">
+      <div class="col-md-8">
+
+        <div class="text-center mt-3">
+          <h3>Tabela de  Contatos</h3>
+        </div>
 
         <div
           ng-show="message.length"
@@ -38,6 +44,7 @@
           <thead>
             <tr>
               <th></th>
+              <th>Serial</th>
               <th><a href=""ng-click="ordenarPor('nome')">Nome</a></th>
               <th><a href="" ng-click="ordenarPor('telefone')">Telefone</a></th>
               <th>Operadora</th>
@@ -57,6 +64,7 @@
               <td>
                 <input type="checkbox" ng-model="contato.selecionado">
               </td>
+              <td>{{ contato.serial }}</td>
               <td>{{ contato.nome | uppercase | limitTo: 15 }}</td>
               <td>{{ contato.telefone }}</td>
               <td>{{ contato.operadora.nome | lowercase }}</td>
@@ -72,11 +80,15 @@
             </tr>
           </tbody>
         </table>
+      </div>
 
-        <hr>
-
+      <!-- FORM -->
+      <div class="col-md-4 mt-3">
+        <div class="text-center">
+          <h3>Cadastrar Contato</h3>
+        </div>
         <form name="contatoForm">
-          
+      
           <!-- INPUT: NOME -->
           <div class="row mb-3">
             <div class="col-sm-12">
@@ -181,17 +193,30 @@
           </div>
         </form>
       </div>
+
     </div>
   </div>
   <div ng-include="'./view/footer.html'"></div>
 
   <!-- SCRIPTS -->
-  <script src="./angular-messages.js"></script>
   <script src="./node_modules/angular/angular.js"></script>
   <script src="./node_modules/angular-locale-pt-br/angular-locale_pt-br.js"></script>
   <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    
+
+  <script src="./angular-messages.js"></script>
+
   <script src="./js/app.js"></script>
-  <script src="./js/controllers/listaTelefonicaCtrl.js"></script>
+
+  <!-- configs -->
+  <script src="./js/configValue.js"></script>
+  <script src="./js/config/serialGeneratorConfig.js"></script>
+
+  <!-- services -->
+  <script src="./js/services/contatosAPIService.js"></script>
+  <script src="./js/services/operadorasAPIService.js"></script>
+  <script src="./js/services/serialGeneratorService.js"></script>
+
+  <!-- controllers -->
+  <script src="./js/controllers/listaTelefonicaCtrl.js"></script>  
 </body>
 </html>
