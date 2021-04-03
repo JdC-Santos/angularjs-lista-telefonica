@@ -17,6 +17,14 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4 offset-md-4">
+
+        <div
+          ng-show="message.length"
+          class="alert alert-danger"
+          role="alert"
+        >
+        {{ message }}
+        </div>
         
         <!-- CAMPO DE BUSCA -->
         <input 
@@ -49,7 +57,7 @@
               <td>
                 <input type="checkbox" ng-model="contato.selecionado">
               </td>
-              <td>{{ contato.nome | uppercase | limitTo: 4 }}</td>
+              <td>{{ contato.nome | uppercase | limitTo: 15 }}</td>
               <td>{{ contato.telefone }}</td>
               <td>{{ contato.operadora.nome | lowercase }}</td>
               <td>{{contato.data | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -185,26 +193,53 @@
   <script>
     angular.module('listaTelefonica',['ngMessages']);
     angular.module('listaTelefonica')
-    .controller('listaTelefonicaCtrl', function($scope) {
+    .controller('listaTelefonicaCtrl', function($scope, $http) {
+      
       $scope.app = 'Lista Telefonica';
-      $scope.contatos = [
-        {nome: 'Pedro', telefone:'77777777', cor: 'orange', data: new Date(), operadora: { nome:'Oi', cod: 14, categoria:'Celular'} },
-        {nome: 'Maria', telefone:'88888888', cor: 'red', data: new Date(), operadora: { nome:'Vivo', cod: 15, categoria:'Celular'} },
-        {nome: 'José', telefone:'99999999',cor: 'cyan', data: new Date(), operadora: { nome:'Tim', cod: 41, categoria:'Celular'} }
-      ];
+      
+      // inicia com array vazio os contato e operadoras, para evitar erros
+      $scope.contatos = [];
+      $scope.operadoras = [];
 
-      $scope.operadoras = [
-        { nome:'Oi', cod: '14', categoria:'Celular', preco: 2 },
-        { nome:'Vivo', cod: '15', categoria:'Celular', preco: 1 },
-        { nome:'Tim', cod: '41', categoria:'Celular', preco: 2 } ,
-        { nome:'GVT', cod: '25', categoria:'Fixo', preco: 1 },
-        { nome:'Embrael', cod: '21', categoria:'Fixo', preco: 3 }
-      ];
+      // função para carregar os contatos da API
+      carregarContatos = function() {
+        $http.get('http://localhost:3000/contatos')
+        .then(function(res) {
+          $scope.contatos = res.data;
+        });
+      }
+
+      // função para carregar as operadoras da API
+      carregarOperadoras = function() {
+        $http.get('http://localhost:3000/operadoras')
+        .then(function(res) {
+          $scope.operadoras = res.data;
+        })
+      }
 
       $scope.adicionarContato = function(contato) {
-        $scope.contatos.push(angular.copy(contato));
-        delete $scope.contato;
-        $scope.contatoForm.$setPristine();
+        
+        $http.post('http://localhost:3000/contatos', contato)
+        .then(function(res) {
+          
+          // recarrega os dados em caso de sucesso
+          carregarContatos();
+          
+          // reseta os inputs do form
+          $scope.contatoForm.$setPristine();
+          
+          // deleta o objeto que foi criado para salvar o novo contato
+          delete $scope.contato;
+
+        }).catch(function(error) {
+
+          // mostra uma mensagem para o usuário
+          $scope.message = error.data;
+
+          // mostra o erro no console
+          console.log(error);
+        });
+
       }
 
       $scope.apagarContatos = function(contatos) {
@@ -223,6 +258,10 @@
         $scope.criterioDeOrdenacao = campo;
         $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
       }
+
+      // carrega os contatos e operadoras ao carregar a página
+      carregarContatos();
+      carregarOperadoras();
     });
   </script>
 </body>
