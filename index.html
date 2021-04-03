@@ -65,7 +65,7 @@
                 <input type="checkbox" ng-model="contato.selecionado">
               </td>
               <td>{{ contato.serial }}</td>
-              <td>{{ contato.nome | uppercase | limitTo: 15 }}</td>
+              <td>{{ contato.nome | name | ellipsis: 10 }}</td>
               <td>{{ contato.telefone }}</td>
               <td>{{ contato.operadora.nome | lowercase }}</td>
               <td>{{contato.data | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -215,6 +215,10 @@
   <script src="./js/services/contatosAPIService.js"></script>
   <script src="./js/services/operadorasAPIService.js"></script>
   <script src="./js/services/serialGeneratorService.js"></script>
+
+  <!-- filtros -->
+  <script src="./js/filters/nameFilter.js"></script>
+  <script src="./js/filters/ellipsisFilter.js"></script>
 
   <!-- controllers -->
   <script src="./js/controllers/listaTelefonicaCtrl.js"></script>  
