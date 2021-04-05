@@ -117,6 +117,21 @@
               >
             </div>
           </div>
+          
+          <!-- INPUT: DATA -->
+          <div class="row mb-3">
+            <div class="col-sm-12">
+              <input 
+                type="text"
+                name="data"
+                class="form-control"
+                placeholder="dd/mm/yyyy"
+                ng-model="contato.data"
+                ng-required="true"
+                ui-date
+              >
+            </div>
+          </div>
 
           <!-- SELECT: OPERADORA -->
           <div class="row mb-3">
@@ -209,6 +224,7 @@
 
   <!-- directives -->
   <script src="./js/directives/uiAlertDirective.js"></script>
+  <script src="./js/directives/uiDateDirective.js"></script>
 
   <!-- services -->
   <script src="./js/services/contatosAPIService.js"></script>

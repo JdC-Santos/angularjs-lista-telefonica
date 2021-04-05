@@ -28,8 +28,6 @@ angular.module('listaTelefonica')
 
       contato.serial = serialGenerator.generate();
 
-      contato.data = new Date();
-
       contatosAPI.saveContato(contato).then(function(res) {
         
         // recarrega os dados em caso de sucesso
