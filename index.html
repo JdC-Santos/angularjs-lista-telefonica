@@ -9,8 +9,13 @@
   <!-- CSS -->
   <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/ui-accordion.css">
+  <link rel="stylesheet" href="./css/loading.css">
 </head>
 <body >
+
+  <div ng-show="loading" class="loading">
+    <h3>Carregando, por favor aguarde...</h3>
+  </div>
   <div ng-view></div>
   
   <div ng-include="'./view/footer.html'"></div>
@@ -28,6 +33,7 @@
   <script src="./js/configValue.js"></script>
   <script src="./js/config/serialGeneratorConfig.js"></script>
   <script src="./js/config/routeConfig.js"></script>
+  <script src="./js/config/interceptorsConfig.js"></script>
 
   <!-- libs -->
   <script src="./lib/serialGenerator/serialGenerator.js"></script>
@@ -49,5 +55,10 @@
   <script src="./js/controllers/novoContatoCtrl.js"></script>
   <script src="./js/controllers/detalhesContatoCtrl.js"></script>
   <script src="./js/controllers/listaContatosCtrl.js"></script>
+
+  <!-- interceptors -->
+  <script src="js/interceptors/timestampInterceptor.js"></script>
+  <script src="js/interceptors/errorInterceptor.js"></script>
+  <script src="js/interceptors/loadingInterceptor.js"></script>
 </body>
 </html>
