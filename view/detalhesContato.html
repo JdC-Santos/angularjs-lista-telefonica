@@ -1,0 +1,29 @@
+<div ng-include="'./view/header.html'"></div>
+
+<!-- FORM -->
+<div class="container">
+  <div class="col-md-4 offset-md-4 mt-3">
+    <table class="table">
+      <tr>
+        <td>Nome: </td>
+        <td>{{ contato.nome }}</td>
+      </tr>
+
+      <tr>
+        <td>Telefone: </td>
+        <td>{{ contato.telefone }}</td>
+      </tr>
+
+      <tr>
+        <td>Operadora: </td>
+        <td>{{ contato.operadora.nome }}</td>
+      </tr>
+
+      <tr>
+        <td>Data de Nascimento: </td>
+        <td>{{ contato.data | date:"dd/MM/yyyy" }}</td>
+      </tr>
+    </table>
+    <a href="#!/contatos" class="btn btn-info"> Lista de contatos</a>
+  </div>  
+</div>

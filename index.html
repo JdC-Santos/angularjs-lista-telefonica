@@ -10,240 +10,14 @@
   <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/ui-accordion.css">
 </head>
-<body ng-controller="listaTelefonicaCtrl">  
-  <div class="p-3 mb-2 bg-secondary bg-gradient text-white text-center">
-    <h4>{{ app }}</h4>
-  </div>
-
-  <div class="container">
-    
-    <!-- TABELA -->
-    <div class="row">
-      <div class="col-md-8">
-
-        <div class="text-center mt-3">
-          <h3>Tabela de  Contatos</h3>
-        </div>
-
-        <ui-accordions>
-          
-          <ui-accordion title="Accordion 1">
-            Maecenas lacinia enim urna, sed posuere turpis scelerisque vestibulum.
-            Quisque mattis lacus sit amet est lobortis consectetur.
-            Nullam et posuere massa, quis mattis dolor.
-            Ut volutpat magna vel ligula finibus, vitae imperdiet dui commodo.
-          </ui-accordion>
-
-          <ui-accordion title="Accordion 2">
-            Maecenas lacinia enim urna, sed posuere turpis scelerisque vestibulum.
-            Quisque mattis lacus sit amet est lobortis consectetur.
-            Nullam et posuere massa, quis mattis dolor.
-            Ut volutpat magna vel ligula finibus, vitae imperdiet dui commodo.
-          </ui-accordion>
-
-          <ui-accordion title="Accordion 3">
-            Maecenas lacinia enim urna, sed posuere turpis scelerisque vestibulum.
-            Quisque mattis lacus sit amet est lobortis consectetur.
-            Nullam et posuere massa, quis mattis dolor.
-            Ut volutpat magna vel ligula finibus, vitae imperdiet dui commodo.
-          </ui-accordion>
-
-          <ui-accordion title="Accordion 4">
-            Maecenas lacinia enim urna, sed posuere turpis scelerisque vestibulum.
-            Quisque mattis lacus sit amet est lobortis consectetur.
-            Nullam et posuere massa, quis mattis dolor.
-            Ut volutpat magna vel ligula finibus, vitae imperdiet dui commodo.
-          </ui-accordion>
-
-        </ui-accordions>
-
-        <ui-alert title='Ops, ocorreu um erro:' ng-show="message.length">
-          {{ message }}
-        </ui-alert>
-        
-        <!-- CAMPO DE BUSCA -->
-        <input 
-          type="text" 
-          class="form-control"
-          placeholder="O que voce está buscando?"
-          ng-model="busca"
-        >
-
-        <table ng-show="contatos.length" class="table table-striped text-center">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Serial</th>
-              <th><a href=""ng-click="ordenarPor('nome')">Nome</a></th>
-              <th><a href="" ng-click="ordenarPor('telefone')">Telefone</a></th>
-              <th>Operadora</th>
-              <th>Data</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr 
-              ng-class="{'bg-warning': contato.selecionado }"
-              ng-repeat="
-                contato in contatos 
-                | filter: busca 
-                | orderBy: criterioDeOrdenacao: direcaoOrdenacao 
-                track by $index"
-            >
-              <td>
-                <input type="checkbox" ng-model="contato.selecionado">
-              </td>
-              <td>{{ contato.serial }}</td>
-              <td>{{ contato.nome | name | ellipsis: 10 }}</td>
-              <td>{{ contato.telefone }}</td>
-              <td>{{ contato.operadora.nome | lowercase }}</td>
-              <td>{{contato.data | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td>
-                <div 
-                  style="width:20px; height: 20px;" 
-                  ng-style="{'background-color': contato.cor}"
-                  ng-hide="contato.selecionado"
-                  >
-                  </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- FORM -->
-      <div class="col-md-4 mt-3">
-        <div class="text-center">
-          <h3>Cadastrar Contato</h3>
-        </div>
-        <form name="contatoForm">
-      
-          <!-- INPUT: NOME -->
-          <div class="row mb-3">
-            <div class="col-sm-12">
-              <input 
-                type="text"
-                name="nome"
-                class="form-control" 
-                placeholder="Nome"
-                ng-model="contato.nome"
-                ng-minlength="2"
-                ng-maxlength="20"
-                ng-required="true"
-              >
-            </div>
-          </div>
-
-          <!-- INPUT: TELEFONE -->
-          <div class="row mb-3">
-            <div class="col-sm-12">
-              <input 
-                type="text"
-                name="telefone"
-                class="form-control"
-                placeholder="Telefone"
-                ng-model="contato.telefone"
-                ng-minlength="8"
-                ng-maxlength="9"
-                ng-pattern="/^\d{4,5}-\d{4}$/"
-                ng-required="true"
-              >
-            </div>
-          </div>
-          
-          <!-- INPUT: DATA -->
-          <div class="row mb-3">
-            <div class="col-sm-12">
-              <input 
-                type="text"
-                name="data"
-                class="form-control"
-                placeholder="dd/mm/yyyy"
-                ng-model="contato.data"
-                ng-required="true"
-                ui-date
-              >
-            </div>
-          </div>
-
-          <!-- SELECT: OPERADORA -->
-          <div class="row mb-3">
-            <div class="col-sm-12">
-              <select 
-                class="form-control"
-                ng-model="contato.operadora" 
-                ng-options="operadora.nome +' ( '+(operadora.preco | currency)+' )' for operadora in operadoras | orderBy: 'nome'"
-              >
-                <option value="">Selecione uma Operadora</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- ERROS: NOME -->
-          <div
-            ng-if="contatoForm.nome.$error.length" 
-            ng-messages="contatoForm.nome.$error" 
-            class="alert alert-danger"
-            role="alert">
-            <!-- NOME - MSG ERRO: REQUIRED -->
-            <div ng-message="required">
-              Por favor, preencha o nome!
-            </div>
-
-            <!-- NOME - MSG ERRO: MINLENGTH (2) -->
-            <div ng-show="minlength" >
-              O nome deve ter pelo menos 2 caracteres
-            </div>
-          </div>
-        
-          <!-- TELEFONE - MSG ERRO: REQUIRED -->
-          <div
-            ng-show="contatoForm.telefone.$error.required && contatoForm.telefone.$dirty"
-            class="alert alert-danger"
-            role="alert"
-          >
-            Por favor, preencha o telefone!
-          </div>
-
-          <!-- TELEFONE - MSG ERRO: PATTERN -->
-          <div
-            ng-show="contatoForm.telefone.$error.pattern"
-            class="alert alert-danger"
-            role="alert"
-          >
-            O campo telefone deve ter o formato XXXXX-XXXX
-          </div>
-
-          <!-- BOTÃO: SALVAR -->
-          <div class="row mb-3">
-            <div class="d-grid gap-0 col-12 mx-auto">
-              <button 
-                class="btn btn-success" 
-                ng-click="adicionarContato(contato)"
-                ng-disabled="contatoForm.$invalid"
-                >Salvar</button>
-            </div>
-          </div>
-
-          <!-- BOTÃO: REMOVER -->
-          <div class="row mb-3">
-            <div class="d-grid gap-0 col-12 mx-auto">
-              <button 
-                class="btn btn-danger" 
-                ng-click="apagarContatos(contatos)"
-                ng-if="isContatoSelecionado(contatos)"
-                >Remover</button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-    </div>
-  </div>
+<body >
+  <div ng-view></div>
+  
   <div ng-include="'./view/footer.html'"></div>
 
   <!-- SCRIPTS -->
   <script src="./node_modules/angular/angular.js"></script>
+  <script src="./node_modules/angular-route/angular-route.min.js"></script>
   <script src="./node_modules/angular-locale-pt-br/angular-locale_pt-br.js"></script>
   <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
 
@@ -253,6 +27,7 @@
   <!-- configs -->
   <script src="./js/configValue.js"></script>
   <script src="./js/config/serialGeneratorConfig.js"></script>
+  <script src="./js/config/routeConfig.js"></script>
 
   <!-- libs -->
   <script src="./lib/serialGenerator/serialGenerator.js"></script>
@@ -270,6 +45,9 @@
   <script src="./js/filters/ellipsisFilter.js"></script>
 
   <!-- controllers -->
-  <script src="./js/controllers/listaTelefonicaCtrl.js"></script>  
+  <script src="./js/controllers/listaTelefonicaCtrl.js"></script>
+  <script src="./js/controllers/novoContatoCtrl.js"></script>
+  <script src="./js/controllers/detalhesContatoCtrl.js"></script>
+  <script src="./js/controllers/listaContatosCtrl.js"></script>
 </body>
 </html>
