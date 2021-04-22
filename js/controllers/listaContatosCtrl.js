@@ -6,14 +6,26 @@ angular.module('listaTelefonica')
     // inicia com array vazio os contato e operadoras, para evitar erros
     $scope.contatos = contatos.data;
 
+    var init = function() {
+      calcularImpostos($scope.contatos);
+    }
+
+    var calcularImpostos = function(contatos) {
+      contatos.forEach(contato => {
+        contato.operadora.precoComImposto = calcularImposto(contato.operadora.preco);
+      });
+    }
+
     $scope.apagarContatos = function(contatos) {
       $scope.contatos = contatos.filter(function(e) {
         return !e.selecionado;
       });
+
+      $scope.verificarContatoSelecionado($scope.contatos);
     }
 
-    $scope.isContatoSelecionado = function(contatos) {
-      return contatos.some(function(contato){
+    $scope.verificarContatoSelecionado = function(contatos) {
+      $scope.hasContatoSelecionado = contatos.some(function(contato){ 
         return contato.selecionado;
       });
     }
@@ -22,4 +34,11 @@ angular.module('listaTelefonica')
       $scope.criterioDeOrdenacao = campo;
       $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
     }
+
+    var calcularImposto = function(valor) {
+      var imposto = 1.2;
+      return valor * imposto;
+    }
+
+    init();
   });
