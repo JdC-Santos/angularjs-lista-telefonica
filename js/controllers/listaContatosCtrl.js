@@ -40,5 +40,9 @@ angular.module('listaTelefonica')
       return valor * imposto;
     }
 
+    $scope.reset = function() {
+      $scope.contatos = angular.copy($scope.contatos);
+    }
+
     init();
   });

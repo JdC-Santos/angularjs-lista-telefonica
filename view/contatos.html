@@ -74,7 +74,7 @@
               contato in contatos 
               | filter: busca 
               | orderBy: criterioDeOrdenacao: direcaoOrdenacao 
-              track by $index"
+              track by contato.id"
           >
             <td>
               <input
@@ -117,6 +117,7 @@
       </div>
 
       <a href="#!/novo-contato" class="btn btn-info">Novo Contato</a>
+      <button class="btn btn-warning" ng-click="reset()">Reset</button>
     </div>
   </div>
 </div>
